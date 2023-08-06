@@ -18,5 +18,5 @@ public interface UserRepository {
 
     void checkId(int itemId, int userId);
 
-    void addItem(int ItemId, int userId);
+    void addItem(int itemId, int userId);
 }
