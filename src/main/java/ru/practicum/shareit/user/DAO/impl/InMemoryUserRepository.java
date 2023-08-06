@@ -1,10 +1,13 @@
 package ru.practicum.shareit.user.DAO.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.DAO.UserRepository;
+import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.DTO.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -15,37 +18,44 @@ import java.util.List;
 public class InMemoryUserRepository implements UserRepository {
 
     private HashMap<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    private UserMapper userMapper;
 
-    @Override
-    public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+    @Autowired
+    public InMemoryUserRepository(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Override
-    public User getUser(int id) {
-        return users.get(id);
+    public List<UserDto> getUsers() {
+        List<UserDto> us = new ArrayList<>();
+        for (User user : users.values()) {
+            us.add(userMapper.userToUserDto(user));
+        }
+        return us;
     }
 
     @Override
-    public User addUser(User user) {
-        validEmail(user);
-        user.setId(id++);
-        users.put(user.getId(), user);
-        return user;
-    }
-
-    @Override
-    public User updateUser(User user, int id) {
+    public UserDto getUser(int id) {
         if (!users.containsKey(id)) throw new NotFoundException(HttpStatus.NOT_FOUND, "Такого юзера не существует");
-        user.setId(id);
-        validEmail(user);
-        User u = users.get(id);
-        if (user.getEmail() != null) u.setEmail(user.getEmail());
-        if (user.getName() != null) u.setName(user.getName());
-        u.setId(id);
-        users.put(u.getId(), u);
-        return users.get(id);
+        return userMapper.userToUserDto(users.get(id));
+    }
+
+    @Override
+    public UserDto addUser(UserDto userDto) {
+        validEmail(userDto);
+        User user = userMapper.userDtoToUser(userDto);
+        users.put(user.getId(), user);
+        return getUser(user.getId());
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto, int id) {
+        if (!users.containsKey(id)) throw new NotFoundException(HttpStatus.NOT_FOUND, "Такого юзера не существует");
+        userDto.setId(id);
+        validEmail(userDto);
+        User updatedUser = userMapper.updateUser(userDto, users.get(id));
+        users.put(updatedUser.getId(), updatedUser);
+        return getUser(id);
 
     }
 
@@ -54,24 +64,23 @@ public class InMemoryUserRepository implements UserRepository {
         users.remove(id);
     }
 
-    private void validEmail(User user) {
+    private void validEmail(UserDto userDto) {
         for (User u : users.values()) {
-            if (u.getEmail().equals(user.getEmail()) && u.getId() != user.getId())
+            if (u.getEmail().equals(userDto.getEmail()) && u.getId() != userDto.getId())
                 throw new ValidationException(HttpStatus.INTERNAL_SERVER_ERROR, "Такой мэйл уже есть");
         }
     }
 
     public void checkId(int itemId, int userId) {
         if (!users.containsKey(userId)) throw new NotFoundException(HttpStatus.NOT_FOUND, "Такого юзера не существует");
-        if (!getUser(userId).getItemsList().contains(itemId))
+        if (!users.get(userId).getItemsList().contains(itemId))
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Такой вещи не существует");
-        ;
     }
 
     @Override
     public void addItem(int itemId, int userId) {
         if (!users.containsKey(userId)) throw new NotFoundException(HttpStatus.NOT_FOUND, "Такого юзера не существует");
-        getUser(userId).getItemsList().add(itemId);
+        users.get(userId).getItemsList().add(itemId);
     }
 }
 

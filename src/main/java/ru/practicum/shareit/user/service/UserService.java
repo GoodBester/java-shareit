@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.DAO.UserRepository;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.DTO.UserDto;
 
 import java.util.List;
 
@@ -16,19 +16,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUsers() {
+    public List<UserDto> getUsers() {
         return userRepository.getUsers();
     }
 
-    public User getUser(int id) {
+    public UserDto getUser(int id) {
         return userRepository.getUser(id);
     }
 
-    public User addUser(User user) {
+    public UserDto addUser(UserDto user) {
         return userRepository.addUser(user);
     }
 
-    public User updateUser(User user, int id) {
+    public UserDto updateUser(UserDto user, int id) {
         return userRepository.updateUser(user, id);
     }
 
