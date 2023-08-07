@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.DAO.ItemRepository;
@@ -9,13 +10,9 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-
-    @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
 
 
     @Override

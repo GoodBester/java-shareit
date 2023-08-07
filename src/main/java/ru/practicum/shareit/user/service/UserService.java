@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.DAO.UserRepository;
@@ -8,13 +9,10 @@ import ru.practicum.shareit.user.model.DTO.UserDto;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserService {
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public List<UserDto> getUsers() {
         return userRepository.getUsers();

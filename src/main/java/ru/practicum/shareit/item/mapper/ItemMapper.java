@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,21 +11,20 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.service.UserService;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemMapper {
-    private UserService userService;
+    private final UserService userService;
 
     private int idSetter = 1;
 
-    @Autowired
-    public ItemMapper(UserService userService) {
-        this.userService = userService;
-    }
-
 
     public Item itemDtoToItem(ItemDto itemDto, int id) {
-        if (itemDto.getAvailable() == null) throw new ValidationException(HttpStatus.BAD_REQUEST, "Available not");
-        if (userService.getUser(id) == null)
+        if (itemDto.getAvailable() == null) {
+            throw new ValidationException(HttpStatus.BAD_REQUEST, "Available not");
+        }
+        if (userService.getUser(id) == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Такого юзера не существует");
+        }
         Item item = new Item();
         item.setId(idSetter++);
         item.setOwner(id);
@@ -48,7 +48,6 @@ public class ItemMapper {
 
     public Item updateItem(ItemDto itemDto, int id, Item item) {
         userService.checkId(item.getId(), id);
-//        item.setOwner(id);
         if (itemDto.getName() != null) item.setName(itemDto.getName());
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
         if (itemDto.getDescription() != null) item.setDescription(itemDto.getDescription());

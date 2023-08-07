@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.DAO.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.DAO.ItemRepository;
@@ -7,29 +8,23 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class InMemoryItemRepository implements ItemRepository {
 
-    private ItemMapper itemMapper;
+    private final ItemMapper itemMapper;
 
-    HashMap<Integer, Item> items = new HashMap<>();
+    private final Map<Integer, Item> items = new HashMap<>();
 
-    @Autowired
-    public InMemoryItemRepository(ItemMapper itemMapper) {
-        this.itemMapper = itemMapper;
-    }
 
     @Override
     public List<ItemDto> getUserItem(int id) {
-        List<ItemDto> userItem = new ArrayList<>();
-        for (Item i : items.values()) {
-            if (i.getOwner() == id) userItem.add(itemMapper.itemToItemDto(i));
-        }
-        return userItem;
+        return items.values().stream().filter(item -> item.getOwner() == id).map(itemMapper::itemToItemDto).collect(Collectors.toList());
     }
 
     @Override
@@ -46,15 +41,9 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public List<ItemDto> search(String text) {
-        List<ItemDto> userItem = new ArrayList<>();
-        if (text.isEmpty()) return userItem;
-        for (Item i : items.values()) {
-            if (i.getName().toLowerCase().contains(text.toLowerCase()) ||
-                    i.getDescription().toLowerCase().contains(text.toLowerCase()) && i.isAvailable()) {
-                userItem.add(itemMapper.itemToItemDto(i));
-            }
-        }
-        return userItem;
+        return items.values().stream().filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()) && item.isAvailable()) && !text.isEmpty())
+                .map(itemMapper::itemToItemDto).collect(Collectors.toList());
     }
 
     @Override
