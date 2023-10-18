@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import javax.persistence.*;
 /**
  * TODO Sprint add-controllers.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "items")
 public class Item {
