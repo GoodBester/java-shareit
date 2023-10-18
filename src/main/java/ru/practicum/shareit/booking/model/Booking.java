@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
@@ -10,7 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 
 /**
  * TODO Sprint add-bookings.
