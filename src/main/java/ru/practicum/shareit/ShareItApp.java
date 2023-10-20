@@ -23,13 +23,14 @@ public class ShareItApp {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
+
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
-        return  mapper;
+        return mapper;
     }
 
 }
