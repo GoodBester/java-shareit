@@ -92,49 +92,49 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerOrderByStartDesc(user);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdOrderByStartDesc(user.getId());
                 } else {
-                    bookings = bookingRepository.findAllByBookerOrderByStartDesc(user);
+                    bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(user.getId());
                 }
                 break;
 
             case "FUTURE":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerAndStartAfterOrderByStartDesc(user, now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartAfterOrderByStartDesc(user.getId(), now);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerAndStartAfterOrderByStartDesc(user, now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStartAfterOrderByStartDesc(user.getId(), now);
                 }
                 break;
 
             case "PAST":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerAndEndBeforeOrderByStartDesc(user, now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndEndBeforeOrderByStartDesc(user.getId(), now);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerAndEndBeforeOrderByStartDesc(user, now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndEndBeforeOrderByStartDesc(user.getId(), now);
                 }
                 break;
 
             case "CURRENT":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(user, now, now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerAndStartBeforeAndEndAfterOrderByStartDesc(user, now, now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now);
                 }
                 break;
 
             case "WAITING":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerAndStatusOrderByStartDesc(user, Status.WAITING);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.WAITING);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerAndStatusOrderByStartDesc(user, Status.WAITING);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.WAITING);
                 }
                 break;
 
             case "REJECTED":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_OwnerAndStatusOrderByStartDesc(user, Status.REJECTED);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerAndStatusOrderByStartDesc(user, Status.REJECTED);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED);
                 }
                 break;
 

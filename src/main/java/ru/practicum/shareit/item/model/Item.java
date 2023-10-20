@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
@@ -13,6 +15,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "items")
 public class Item {
     @Id
@@ -27,9 +31,10 @@ public class Item {
     @Column(name = "available")
     private boolean available;
     @JoinColumn(name = "owner")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
     @Column(name = "count_rented")
     private int countRented;
+
 
 }

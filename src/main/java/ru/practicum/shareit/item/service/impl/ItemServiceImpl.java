@@ -22,6 +22,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +40,14 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @Transactional
     public List<ItemReturnDto> getUserItem(long id) {
         User user = userService.getUserEntity(id);
         return itemRepository.findAllByOwner_Id(id).stream().map(i -> mapToItemReturnDto(i, true)).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public ItemReturnDto getItem(long itemId, long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Item not found."));
         User user = userService.getUserEntity(userId);
@@ -58,6 +61,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(CommentDto commentDto, long userId, long itemId) {
         if (bookingRepository.findFirstByBooker_IdAndItem_IdAndStatusAndEndBefore(userId, itemId, Status.APPROVED, LocalDateTime.now()) == null) {
             throw new ValidationException(HttpStatus.NOT_FOUND, "User did not book this item");
@@ -65,10 +69,10 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.getUserEntity(userId);
         Item item = getItemEntity(itemId);
         commentDto.setAuthorName(user.getName());
-        commentDto.setCreated(LocalDateTime.now());
         Comment com = mapper.map(commentDto, Comment.class);
         com.setCommentator(user);
         com.setItem(item);
+        com.setCreated(LocalDateTime.now());
         return mapToCommentDto(commentRepository.save(com));
     }
 
@@ -105,6 +109,7 @@ public class ItemServiceImpl implements ItemService {
     private CommentDto mapToCommentDto(Comment comment) {
         CommentDto commentDto = mapper.map(comment, CommentDto.class);
         commentDto.setAuthorName(comment.getCommentator().getName());
+        commentDto.setCreated(comment.getCreated());
         return commentDto;
     }
 
@@ -125,9 +130,9 @@ public class ItemServiceImpl implements ItemService {
 
     private ItemReturnDto mapToItemReturnDto(Item item, boolean isOwner) {
         ItemReturnDto iDto = mapper.map(item, ItemReturnDto.class);
-        Booking lastBooking = bookingRepository.findFirstByItemAndStatusAndStartBeforeOrderByEndDesc(item, Status.APPROVED, LocalDateTime.now());
-        Booking nextBooking = bookingRepository.findFirstByItemAndStatusAndStartAfterOrderByStartAsc(item, Status.APPROVED, LocalDateTime.now());
-        iDto.setComments(commentRepository.findAllByItem(item).stream().map(this::mapToCommentDto).collect(Collectors.toList()));
+        Booking lastBooking = bookingRepository.findFirstByItem_IdAndStatusAndStartBeforeOrderByEndDesc(item.getId(), Status.APPROVED, LocalDateTime.now());
+        Booking nextBooking = bookingRepository.findFirstByItem_IdAndStatusAndStartAfterOrderByStartAsc(item.getId(), Status.APPROVED, LocalDateTime.now());
+        iDto.setComments(commentRepository.findAllByItem_Id(item.getId()).stream().map(this::mapToCommentDto).collect(Collectors.toList()));
         iDto.setLastBooking(convertToBookingDtoForItem(lastBooking, isOwner));
         iDto.setNextBooking(convertToBookingDtoForItem(nextBooking, isOwner));
         return iDto;
