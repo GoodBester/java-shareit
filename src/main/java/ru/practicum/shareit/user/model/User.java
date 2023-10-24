@@ -1,23 +1,29 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.*;
 
 /**
  * TODO Sprint add-controllers.
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Entity
+@Table(name = "users")
 public class User {
-    private int id;
-    @NotEmpty
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private long id;
+    @Column(name = "name")
     private String name;
-    @NotEmpty
-    @Email
+    @Column(name = "email")
     private String email;
-    private List<Integer> itemsList = new ArrayList<>();
 
 }
