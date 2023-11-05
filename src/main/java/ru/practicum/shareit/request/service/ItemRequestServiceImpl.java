@@ -44,15 +44,15 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestReturnDto> getRequests(long userId) {
         userService.getUserEntity(userId);
-        List<ItemRequestReturnDto> list = itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userId).stream().
-                map(this::mapToReturnDto).collect(Collectors.toList());
+        List<ItemRequestReturnDto> list = itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userId).stream()
+                        .map(this::mapToReturnDto).collect(Collectors.toList());
         return list;
     }
 
     @Override
     public List<ItemRequestReturnDto> getAllRequests(long userId, Pageable page) {
-        List<ItemRequestReturnDto> list = itemRequestRepository.findAllByRequester_IdIsNot(userId, page).stream().
-                map(this::mapToReturnDto).collect(Collectors.toList());
+        List<ItemRequestReturnDto> list = itemRequestRepository.findAllByRequester_IdIsNot(userId, page).stream()
+                .map(this::mapToReturnDto).collect(Collectors.toList());
         return list;
     }
 

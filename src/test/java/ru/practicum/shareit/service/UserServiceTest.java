@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.item.DAO.CommentRepository;
-import ru.practicum.shareit.item.service.impl.ItemServiceImpl;
-import ru.practicum.shareit.request.DAO.ItemRequestRepository;
 import ru.practicum.shareit.user.model.DTO.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
