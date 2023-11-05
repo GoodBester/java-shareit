@@ -1,9 +1,11 @@
 package ru.practicum.shareit.item.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "items")
 public class Item {
@@ -25,7 +28,6 @@ public class Item {
     private long id;
     @Column(name = "name")
     private String name;
-
     @Column(name = "description")
     private String description;
     @Column(name = "available")
@@ -33,8 +35,9 @@ public class Item {
     @JoinColumn(name = "owner")
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
-    @Column(name = "count_rented")
-    private int countRented;
+    @JoinColumn(name = "request_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ItemRequest request;
 
 
 }
