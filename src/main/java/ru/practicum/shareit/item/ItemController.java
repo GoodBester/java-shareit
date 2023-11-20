@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -10,6 +11,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static ru.practicum.shareit.ShareItApp.getPage;
 
 /**
  * TODO Sprint add-controllers.
@@ -22,8 +25,11 @@ public class ItemController {
 
 
     @GetMapping
-    public List<ItemReturnDto> getUserItem(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.getUserItem(userId);
+    public List<ItemReturnDto> getUserItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                                           @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                           @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        Pageable page = getPage(from, size);
+        return itemService.getUserItem(userId, page);
     }
 
     @GetMapping("/{id}")
@@ -44,8 +50,11 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam(value = "text") String text) {
-        return itemService.search(text);
+    public List<ItemDto> search(@RequestParam(value = "text") String text,
+                                @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        Pageable page = getPage(from, size);
+        return itemService.search(text, page);
     }
 
     @PatchMapping("/{id}")

@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -81,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingReturnDto> getAllBookingFromUser(Long userId, String state, String userType) {
+    public List<BookingReturnDto> getAllBookingFromUser(Long userId, String state, String userType, Pageable page) {
         User user = userService.getUserEntity(userId);
         LocalDateTime now = LocalDateTime.now();
         boolean isOwner = userType.equals("owner");
@@ -92,49 +93,49 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdOrderByStartDesc(user.getId());
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdOrderByStartDesc(user.getId(), page);
                 } else {
-                    bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(user.getId());
+                    bookings = bookingRepository.findAllByBooker_IdOrderByStartDesc(user.getId(), page);
                 }
                 break;
 
             case "FUTURE":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartAfterOrderByStartDesc(user.getId(), now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartAfterOrderByStartDesc(user.getId(), now, page);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerIdAndStartAfterOrderByStartDesc(user.getId(), now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStartAfterOrderByStartDesc(user.getId(), now, page);
                 }
                 break;
 
             case "PAST":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndEndBeforeOrderByStartDesc(user.getId(), now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndEndBeforeOrderByStartDesc(user.getId(), now, page);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerIdAndEndBeforeOrderByStartDesc(user.getId(), now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndEndBeforeOrderByStartDesc(user.getId(), now, page);
                 }
                 break;
 
             case "CURRENT":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now, page);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(user.getId(), now, now, page);
                 }
                 break;
 
             case "WAITING":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.WAITING);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.WAITING, page);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.WAITING);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.WAITING, page);
                 }
                 break;
 
             case "REJECTED":
                 if (isOwner) {
-                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED);
+                    bookings = bookingRepository.findAllBookingByItem_Owner_IdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED, page);
                 } else {
-                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED);
+                    bookings = bookingRepository.findAllBookingByBookerIdAndStatusOrderByStartDesc(user.getId(), Status.REJECTED, page);
                 }
                 break;
 

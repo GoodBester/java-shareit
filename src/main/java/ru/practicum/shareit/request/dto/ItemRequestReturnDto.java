@@ -3,22 +3,20 @@ package ru.practicum.shareit.request.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-item-requests.
- */
-@AllArgsConstructor
-@NoArgsConstructor
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
-public class ItemRequestDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ItemRequestReturnDto {
+
     private Long id;
-    @NotEmpty
-    @NotNull
+    private long requesterId;
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime created;
+    private List<ItemDtoForRequest> items;
 }

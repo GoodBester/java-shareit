@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
@@ -8,6 +9,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static ru.practicum.shareit.ShareItApp.getPage;
 
 /**
  * TODO Sprint add-bookings.
@@ -41,13 +44,19 @@ public class BookingController {
 
     @GetMapping
     public List<BookingReturnDto> getAllBookingFromUser(@RequestHeader(name = header) Long userId,
-                                                        @RequestParam(value = "state", required = false) String state) {
-        return bookingService.getAllBookingFromUser(userId, state, "user");
+                                                        @RequestParam(value = "state", required = false) String state,
+                                                        @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        Pageable page = getPage(from, size);
+        return bookingService.getAllBookingFromUser(userId, state, "user", page);
     }
 
     @GetMapping("/owner")
     public List<BookingReturnDto> getAllBookingFromOwner(@RequestHeader(name = header) Long userId,
-                                                         @RequestParam(value = "state", required = false) String state) {
-        return bookingService.getAllBookingFromUser(userId, state, "owner");
+                                                         @RequestParam(value = "state", required = false) String state,
+                                                         @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        Pageable page = getPage(from, size);
+        return bookingService.getAllBookingFromUser(userId, state, "owner", page);
     }
 }

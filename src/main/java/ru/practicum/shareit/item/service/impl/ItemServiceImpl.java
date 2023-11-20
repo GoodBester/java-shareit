@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingReturnDtoForItem;
@@ -19,6 +20,7 @@ import ru.practicum.shareit.item.dto.ItemReturnDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.DAO.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -35,15 +37,15 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-
+    private final ItemRequestRepository itemRequestRepository;
     private final ModelMapper mapper;
 
 
     @Override
     @Transactional
-    public List<ItemReturnDto> getUserItem(long id) {
+    public List<ItemReturnDto> getUserItem(long id, Pageable page) {
         User user = userService.getUserEntity(id);
-        return itemRepository.findAllByOwner_Id(id).stream().map(i -> mapToItemReturnDto(i, true)).collect(Collectors.toList());
+        return itemRepository.findAllByOwner_Id(id, page).stream().map(i -> mapToItemReturnDto(i, true)).collect(Collectors.toList());
     }
 
     @Override
@@ -77,12 +79,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, Pageable page) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
         List<Item> itemList = itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(
-                text, text, true);
+                text, text, true, page);
         return itemList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -90,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(long itemId, long id, ItemDto itemDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Item not found."));
         if (item.getOwner().getId() != id)
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Item do not own to this user");
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Item does not own to this user");
         if (itemDto.getName() != null) item.setName(itemDto.getName());
         if (itemDto.getDescription() != null) item.setDescription(itemDto.getDescription());
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
@@ -98,12 +100,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemDto mapToDto(Item item) {
-        return mapper.map(item, ItemDto.class);
+        ItemDto dto = mapper.map(item, ItemDto.class);
+        if (item.getRequest() != null) {
+            dto.setRequestId(item.getRequest().getId());
+        }
+        return dto;
     }
 
     private Item matToItem(ItemDto itemDto, long id) {
         itemDto.setOwner(userService.getUserEntity(id));
-        return mapper.map(itemDto, Item.class);
+        itemDto.setId(0);
+        Item item = mapper.map(itemDto, Item.class);
+        if (itemDto.getRequestId() != 0) {
+            item.setRequest(itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "request not found.")));
+        }
+        return item;
     }
 
     private CommentDto mapToCommentDto(Comment comment) {
@@ -116,6 +127,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getItemEntity(long id) {
         return itemRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Item not found."));
+    }
+
+    @Override
+    public List<Item> findAllByRequest_Id(Long requestId) {
+        return itemRepository.findAllByRequest_Id(requestId);
     }
 
     private BookingReturnDtoForItem convertToBookingDtoForItem(Booking opt, boolean isOwner) {
