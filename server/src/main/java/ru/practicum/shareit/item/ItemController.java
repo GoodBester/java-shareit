@@ -39,12 +39,14 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                           @Valid @RequestBody ItemDto itemDto) {
         return itemService.addItem(itemDto, userId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId, @Valid @RequestBody CommentDto commentDto,
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId,
+                                 @Valid @RequestBody CommentDto commentDto,
                                  @PathVariable("itemId") int itemId) {
         return itemService.addComment(commentDto, userId, itemId);
     }
