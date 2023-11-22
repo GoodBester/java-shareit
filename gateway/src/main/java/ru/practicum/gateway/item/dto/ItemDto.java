@@ -23,6 +23,6 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
-    private long owner;
+    private User owner;
     private long requestId;
 }

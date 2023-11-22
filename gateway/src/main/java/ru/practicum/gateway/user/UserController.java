@@ -18,8 +18,6 @@ public class UserController {
 
     private final ru.practicum.gateway.user.UserClient userClient;
 
-    public static final String header = "X-Sharer-User-Id";
-
     @GetMapping
     public ResponseEntity<Object> getAllUsers() {
         log.info("Get users request");
@@ -33,21 +31,21 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> getUser(@PathVariable Long userId) {
+    public ResponseEntity<Object> getUser(@PathVariable(name = "userId") Long userId) {
         log.info("Get user userId={}", userId);
         return userClient.getUser(userId);
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDto user,
-                                             @PathVariable long userId) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Object> updateUser(@RequestBody UserDto user,
+                                             @PathVariable(name = "userId") long userId) {
         log.info("A request to the endpoint was received /users updateUser  userId= {}", userId);
         return userClient.updateUser(userId, user);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable long userId) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Object> deleteUser(@PathVariable(name = "userId") long userId) {
         return userClient.deleteUser(userId);
     }
 }

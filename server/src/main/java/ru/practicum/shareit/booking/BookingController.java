@@ -44,7 +44,7 @@ public class BookingController {
 
     @GetMapping
     public List<BookingReturnDto> getAllBookingFromUser(@RequestHeader(name = header) Long userId,
-                                                        @RequestParam(value = "state", required = false) String state,
+                                                        @RequestParam(value = "state", defaultValue = "ALL") String state,
                                                         @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Pageable page = getPage(from, size);
@@ -53,7 +53,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingReturnDto> getAllBookingFromOwner(@RequestHeader(name = header) Long userId,
-                                                         @RequestParam(value = "state", required = false) String state,
+                                                         @RequestParam(value = "state", defaultValue = "ALL") String state,
                                                          @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Pageable page = getPage(from, size);

@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 
 @Transactional
 @SpringBootTest(
-        properties = "db.name=test")
+        properties = "db.name=root")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BookingServiceTest {

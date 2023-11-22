@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
@@ -89,10 +91,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(long itemId, long id, ItemDto itemDto) {
+    public ItemDto updateItem(long itemId, long userId, ItemDto itemDto) {
+        log.warn("item id ={} user Id ={} itemDto={}", itemId, userId, itemDto);
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Item not found."));
-        if (item.getOwner().getId() != id)
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Item does not own to this user");
+        if (item.getOwner().getId() != userId)
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Item does not own to this user owner + " + item.getOwner().getId() + "id = " + userId);
         if (itemDto.getName() != null) item.setName(itemDto.getName());
         if (itemDto.getDescription() != null) item.setDescription(itemDto.getDescription());
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());

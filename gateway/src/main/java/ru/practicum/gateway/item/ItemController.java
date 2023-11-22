@@ -11,6 +11,7 @@ import ru.practicum.gateway.item.dto.ItemDto;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Map;
 
 
 @RestController
@@ -39,16 +40,16 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItem(@RequestHeader(header) long userId,
-                                          @PathVariable Long itemId) {
+                                          @PathVariable(name = "itemId") long itemId) {
         log.info("Get item {}, userId={}", itemId, userId);
         return itemClient.getItem(userId, itemId);
     }
 
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> addComment(@RequestHeader(header) int userId,
-                                             @Valid @RequestBody CommentDto commentDto,
-                                             @PathVariable("itemId") int itemId) {
+    public ResponseEntity<Object> addComment(@RequestHeader(header) long userId,
+                                             @PathVariable(name = "itemId") long itemId,
+                                             @Valid @RequestBody CommentDto commentDto) {
         log.info("Add comment {}, userId={}, itemId={}", commentDto, userId, itemId);
         return itemClient.addComment(userId, itemId, commentDto);
     }
@@ -62,10 +63,10 @@ public class ItemController {
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateItem(@RequestHeader(header) int userId,
-                              @PathVariable("id") int itemId,
-                              @Valid @RequestBody ItemDto itemDto) {
-        return itemClient.updateItem(itemId, userId, itemDto);
+    @PatchMapping("/{itemId}")
+    public ResponseEntity<Object> updateItem(@RequestHeader(header) long userId,
+                                             @PathVariable("itemId") long itemId,
+                                             @RequestBody ItemDto itemDto) {
+        return itemClient.updateItem(userId, itemId, itemDto);
     }
 }

@@ -25,7 +25,7 @@ public class ItemController {
 
 
     @GetMapping
-    public List<ItemReturnDto> getUserItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public List<ItemReturnDto> getUserItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestParam(value = "from", defaultValue = "0") Integer from,
                                            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Pageable page = getPage(from, size);
@@ -33,21 +33,21 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemReturnDto getItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemReturnDto getItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                  @PathVariable("id") int itemId) {
         return itemService.getItem(itemId, userId);
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId,
                            @Valid @RequestBody ItemDto itemDto) {
         return itemService.addItem(itemDto, userId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId,
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                  @Valid @RequestBody CommentDto commentDto,
-                                 @PathVariable("itemId") int itemId) {
+                                 @PathVariable("itemId") long itemId) {
         return itemService.addComment(commentDto, userId, itemId);
     }
 
@@ -59,9 +59,9 @@ public class ItemController {
         return itemService.search(text, page);
     }
 
-    @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                              @PathVariable("id") int itemId,
+    @PatchMapping("/{itemId}")
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                              @PathVariable("itemId") long itemId,
                               @RequestBody ItemDto itemDto) {
         return itemService.updateItem(itemId, userId, itemDto);
     }
