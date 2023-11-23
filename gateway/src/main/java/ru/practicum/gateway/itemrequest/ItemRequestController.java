@@ -40,10 +40,11 @@ public class ItemRequestController {
         log.info("get itemRequest, userId={}", userId);
         return itemRequestClient.getRequests(userId);
     }
+
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequest(@RequestHeader(header) int userId,
-                                           @PathVariable("requestId") int requestId) {
-        log.info("get itemRequest {}, userId={}",requestId, userId);
+                                             @PathVariable("requestId") int requestId) {
+        log.info("get itemRequest {}, userId={}", requestId, userId);
         return itemRequestClient.getRequest(userId, requestId);
     }
 

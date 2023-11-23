@@ -35,7 +35,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addUser(ru.practicum.gateway.user.DTO.@Valid UserDto userDto) {
-        return post("",null, null, userDto);
+        return post("", null, null, userDto);
     }
 
     public ResponseEntity<Object> updateUser(Long userId, UserDto userDto) {
