@@ -3,7 +3,6 @@ package ru.practicum.gateway.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.gateway.item.dto.CommentDto;
 import ru.practicum.gateway.item.dto.ItemDto;
@@ -17,7 +16,6 @@ import javax.validation.constraints.PositiveOrZero;
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class ItemController {
     private final ru.practicum.gateway.item.ItemClient itemClient;
     public static final String header = "X-Sharer-User-Id";
