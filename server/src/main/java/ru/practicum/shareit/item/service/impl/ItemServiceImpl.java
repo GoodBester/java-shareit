@@ -47,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public List<ItemReturnDto> getUserItem(long id, Pageable page) {
         User user = userService.getUserEntity(id);
-        return itemRepository.findAllByOwner_Id(id, page).stream().map(i -> mapToItemReturnDto(i, true)).collect(Collectors.toList());
+        return itemRepository.findAllByOwner_IdOrderById(id, page).stream().map(i -> mapToItemReturnDto(i, true)).collect(Collectors.toList());
     }
 
     @Override
