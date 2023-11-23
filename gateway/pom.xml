@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>share-gateway</artifactId>
+    <artifactId>shareit-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>ShareIt Gateway</name>
@@ -52,10 +52,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>shareit-server</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
     </dependencies>
 
